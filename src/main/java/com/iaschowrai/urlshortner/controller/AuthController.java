@@ -5,7 +5,9 @@ import com.iaschowrai.urlshortner.dtos.LoginRequest;
 import com.iaschowrai.urlshortner.dtos.RegisterRequest;
 import com.iaschowrai.urlshortner.models.User;
 import com.iaschowrai.urlshortner.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,20 +26,14 @@ public class AuthController {
 
 
     @PostMapping("/public/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest){
         return ResponseEntity.ok(userService.authenticateUser(loginRequest));
     }
 
 
     @PostMapping("/public/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest){
-
-        User user = new User();
-        user.setUsername(registerRequest.getUsername());
-        user.setPassword(registerRequest.getPassword());
-        user.setEmail(registerRequest.getEmail());
-        user.setRole("ROLE_USER");
-        userService.registerUser(user);
-        return ResponseEntity.ok("User registered successfully");
+    public ResponseEntity<?> registerUser(@Valid  @RequestBody RegisterRequest registerRequest){
+        userService.registerUser(registerRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 }
