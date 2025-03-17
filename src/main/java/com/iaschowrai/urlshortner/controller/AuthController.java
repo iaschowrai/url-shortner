@@ -1,6 +1,7 @@
 package com.iaschowrai.urlshortner.controller;
 
 
+import com.iaschowrai.urlshortner.dtos.LoginRequest;
 import com.iaschowrai.urlshortner.dtos.RegisterRequest;
 import com.iaschowrai.urlshortner.models.User;
 import com.iaschowrai.urlshortner.service.UserService;
@@ -20,6 +21,13 @@ public class AuthController {
     public AuthController(UserService userService) {
         this.userService = userService;
     }
+
+
+    @PostMapping("/public/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest){
+        return ResponseEntity.ok(userService.authenticateUser(loginRequest));
+    }
+
 
     @PostMapping("/public/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest){
