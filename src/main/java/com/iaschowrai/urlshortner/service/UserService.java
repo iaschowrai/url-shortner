@@ -1,6 +1,8 @@
 package com.iaschowrai.urlshortner.service;
 
 import com.iaschowrai.urlshortner.dtos.LoginRequest;
+import com.iaschowrai.urlshortner.dtos.RegisterRequest;
+import com.iaschowrai.urlshortner.exception.UserAlreadyExistsException;
 import com.iaschowrai.urlshortner.models.User;
 import com.iaschowrai.urlshortner.repository.UserRepository;
 import com.iaschowrai.urlshortner.security.JwtAuthenticationResponse;
@@ -12,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -42,8 +45,21 @@ public class UserService {
         return new JwtAuthenticationResponse(jwt);
     }
 
-    public User registerUser(User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+
+    @Transactional
+    public void registerUser(RegisterRequest registerRequest){
+        if(userRepository.existsByUsername(registerRequest.getUsername())){
+            throw new UserAlreadyExistsException("Username is already taken");
+        }
+        if(userRepository.existsByEmail(registerRequest.getEmail())){
+            throw new UserAlreadyExistsException("Email is already taken");
+        }
+        User user = User.builder()
+                        .username(registerRequest.getUsername())
+                                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                                        .email(registerRequest.getEmail())
+                                                .role("ROLE_USER")
+                                                        .build();
+        userRepository.save(user);
     }
 }
