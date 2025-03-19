@@ -55,12 +55,14 @@ public class UserService {
         if(userRepository.existsByEmail(registerRequest.getEmail())){
             throw new UserAlreadyExistsException("Email is already taken");
         }
-        User user = User.builder()
-                        .username(registerRequest.getUsername())
-                                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                                        .email(registerRequest.getEmail())
-                                                .role("ROLE_USER")
-                                                        .build();
+        User user = new User();
+        user.setUsername(registerRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setEmail(registerRequest.getEmail());
+        user.setRole("ROLE_USER");
+
+        userRepository.save(user);
+
         userRepository.save(user);
     }
 
