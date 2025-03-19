@@ -7,7 +7,6 @@ import com.iaschowrai.urlshortner.models.User;
 import com.iaschowrai.urlshortner.repository.UserRepository;
 import com.iaschowrai.urlshortner.security.JwtAuthenticationResponse;
 import com.iaschowrai.urlshortner.security.JwtUtils;
-import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
